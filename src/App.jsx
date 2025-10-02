@@ -1,34 +1,66 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import ProLayout from '@ant-design/pro-layout'
+import { Button } from 'antd'
+import { BrowserRouter, useNavigate } from 'react-router-dom'
 
-function App() {
-  const [count, setCount] = useState(0)
+const routes = [
+  {
+    path: '/',
+    name: 'Dashboard',
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    routes: [
+      {
+        path: '/users/list',
+        name: 'User List',
+      },
+      {
+        path: '/users/create',
+        name: 'Create User',
+      },
+    ],
+  },
+];
+
+function AppLayout() {
+  const navigate = useNavigate();
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <ProLayout
+      title="My App"
+      layout="mix"
+      logo="https://avatars.githubusercontent.com/u/507615?s=200&v=4"
+      route={{ routes }}
+      onMenuHeaderClick={() => navigate('/')}
+      menuItemRender={(item, dom) => (
+        <a onClick={() => navigate(item.path || '/')}>{dom}</a>
+      )}
+      headerTitleRender={(logo, title, _) => {
+        return (<div>HEAD!!!</div>)
+      }}
+      headerContentRender={()=>{
+        return (<div>HEADMENU</div>)
+      }}
+      menuFooterRender={(props) => {
+        if (props?.collapsed) return undefined
+        return (<div>FOOT!!!</div>)
+      }}
+    >
+      <div style={{ padding: 24 }}>
+        <h1>Hello ProLayout</h1>
+        <Button type="primary">Click Me</Button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </ProLayout>
+  );
+}
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <AppLayout />
+    </BrowserRouter>
   )
 }
 
